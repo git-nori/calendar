@@ -7,6 +7,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
+          <b-nav-item :to="{ name: 'home' }">Home</b-nav-item>
           <b-nav-item v-if="!isLoggedIn" @click="signin()">Sign In</b-nav-item>
           <b-nav-item v-if="isLoggedIn" @click="signout()">Sign Out</b-nav-item>
         </b-navbar-nav>
