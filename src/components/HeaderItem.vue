@@ -7,8 +7,8 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="!authorized" @click="signin()">Sign In</b-nav-item>
-          <b-nav-item v-if="authorized" @click="signout()">Sign Out</b-nav-item>
+          <b-nav-item v-if="!isLoggedIn" @click="signin()">Sign In</b-nav-item>
+          <b-nav-item v-if="isLoggedIn" @click="signout()">Sign Out</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -21,7 +21,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: "HeaderItem",
   computed: {
-    ...mapState('authModule', ['authorized'])
+    ...mapState('authModule', ['isLoggedIn'])
   },
   methods: {
     ...mapActions('authModule', ['signin', 'signout'])

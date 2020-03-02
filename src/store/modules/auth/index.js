@@ -1,13 +1,13 @@
 const state = {
-  authorized: false,
+  isLoggedIn: false,
 };
 
 const getters = {
 };
 
 const mutations = {
-  SET_AUTHORIZED (state, payload) {
-    state.authorized = payload.authorized
+  SET_IS_LOGGED_IN (state, payload) {
+    state.isLoggedIn = payload.isLoggedIn
   }
 };
 
@@ -17,8 +17,8 @@ const actions = {
    */
   signin ({ commit, rootState }) {
     Promise.resolve(rootState.apiModule.api.auth2.getAuthInstance().signIn()).then(_ => {
-      commit('SET_AUTHORIZED', {
-        authorized: true
+      commit('SET_IS_LOGGED_IN', {
+        isLoggedIn: true
       });
     });
   },
@@ -28,14 +28,14 @@ const actions = {
    */
   signout ({ commit, rootState }) {
     Promise.resolve(rootState.apiModule.api.auth2.getAuthInstance().signOut()).then(_ => {
-      commit('SET_AUTHORIZED', {
-        authorized: false
+      commit('SET_IS_LOGGED_IN', {
+        isLoggedIn: false
       });
     });
   },
-  setAuth ({ commit }, authorized) {
-    commit('SET_AUTHORIZED', {
-      authorized: authorized
+  setAuth ({ commit }, isLoggedIn) {
+    commit('SET_IS_LOGGED_IN', {
+      isLoggedIn: isLoggedIn
     })
   }
 };
