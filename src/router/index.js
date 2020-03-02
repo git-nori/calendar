@@ -12,6 +12,12 @@ const routes = [
       import(/* webpackChunkName: "home" */ "@/views/Signin.vue"),
     meta: { isPublic: true }  // public
   },
+  {
+    path: "/",
+    name: "home",
+    component: () =>
+      import(/* webpackChunkName: "home" */ "@/views/Home.vue"),
+  }
 ];
 
 const router = new VueRouter({
