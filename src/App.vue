@@ -1,15 +1,18 @@
 <template>
   <div id="app">
+    <header-item />
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import HeaderItem from "@/components/HeaderItem.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
   name: "app",
   components: {
+    "HeaderItem": HeaderItem
   },
   computed: {
     ...mapState("apiModule", ["api"]),
