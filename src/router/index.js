@@ -6,14 +6,14 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/signin",
-    name: "Signin",
+    path: "/",
+    name: "top",
     component: () =>
-      import(/* webpackChunkName: "home" */ "@/views/Signin.vue"),
+      import(/* webpackChunkName: "home" */ "@/views/Top.vue"),
     meta: { isPublic: true }  // public
   },
   {
-    path: "/",
+    path: "/home",
     name: "home",
     component: () =>
       import(/* webpackChunkName: "home" */ "@/views/Home.vue"),
