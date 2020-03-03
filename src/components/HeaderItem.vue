@@ -3,7 +3,6 @@
     <b-navbar toggleable="lg" type="light" variant="light">
       <b-navbar-brand :to="{name:'top'}">CalendarApp</b-navbar-brand>
 
-      <b-spacer></b-spacer>
       <b-navbar-toggle target="nav-collapse" style="font-size: 1em;"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
