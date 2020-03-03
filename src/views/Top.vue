@@ -13,10 +13,13 @@
       >Sign In</b-button>
     </b-jumbotron>
     <b-container fluid>
+      <b-row class="mx-3 mb-5">
+        <b-col class="text-center"><h2 class="display-4">SERVICES</h2></b-col>
+      </b-row>
       <b-row class="mx-3">
         <b-col sm="12">
           <b-card-group deck>
-            <b-card class="mb-3">
+            <b-card>
               <b-card-title>
                 <div class="h3 mb-2">
                   <b-icon icon="pie-chart-fill"></b-icon>
@@ -27,7 +30,7 @@
               <b-card-text class="text-secondary">Visualize the percentage of your daily activities</b-card-text>
             </b-card>
 
-            <b-card class="mb-3">
+            <b-card>
               <b-card-title>
                 <div class="h3 mb-2">
                   <b-icon icon="bar-chart-fill"></b-icon>
