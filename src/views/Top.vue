@@ -4,20 +4,28 @@
       <template v-slot:header>APP TITLE</template>
       <template v-slot:lead>This is an app that makes Google Calendar easy to use</template>
       <hr class="mt-4" />
-      <b-button
-        v-if="!isSignedIn"
-        @click="clickSignin()"
-        class="mt-3"
-        variant="outline-secondary"
-        size="sm"
-      >Sign In</b-button>
-      <b-button
-        v-else
-        @click="clickSignout()"
-        class="mt-3"
-        variant="outline-secondary"
-        size="sm"
-      >Sign Out</b-button>
+      <template v-if="!isSignedIn">
+        <b-button
+          @click="clickSignin()"
+          class="mt-3"
+          variant="outline-secondary"
+          size="sm"
+        >Sign In</b-button>
+      </template>
+      <template v-else>
+        <b-button
+          :to="{name: 'home'}"
+          class="mt-3 mx-3"
+          variant="outline-info"
+          size="sm"
+        >Home</b-button>
+        <b-button
+          @click="clickSignout()"
+          class="mt-3 mx-3"
+          variant="outline-secondary"
+          size="sm"
+        >Sign Out</b-button>
+      </template>    
     </b-jumbotron>
     <b-container fluid>
       <b-row class="mx-3 mb-5">
