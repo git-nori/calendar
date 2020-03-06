@@ -7,11 +7,11 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="isLoggedIn" :to="{name:'home'}">Home</b-nav-item>
+          <b-nav-item v-if="isSignedIn" :to="{name:'home'}">Home</b-nav-item>
           <b-nav-item href="#">About</b-nav-item>
           <b-nav-form>
-            <b-button v-if="!isLoggedIn" @click="signin()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign In</b-button>
-            <b-button v-if="isLoggedIn" @click="signout()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign Out</b-button>
+            <b-button v-if="!isSignedIn" @click="signin()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign In</b-button>
+            <b-button v-if="isSignedIn" @click="signout()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign Out</b-button>
           </b-nav-form>
         </b-navbar-nav>
       </b-collapse>
@@ -25,7 +25,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: "HeaderItem",
   computed: {
-    ...mapState('authModule', ['isLoggedIn'])
+    ...mapState('authModule', ['isSignedIn'])
   },
   methods: {
     ...mapActions('authModule', ['signin', 'signout'])

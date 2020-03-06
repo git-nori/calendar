@@ -16,14 +16,14 @@ export default {
     HeaderItem: HeaderItem
   },
   computed: {
-    ...mapState("authModule", ["authorized"])
+    ...mapState("authModule", ["isSignedIn"])
   },
   created() {
     // client, OAuth2, calendarをロード
     this.handleClientLoad();
   },
   methods: {
-    ...mapActions("authModule", ["setIsLoggedIn"]),
+    ...mapActions("authModule", ["setIsSignedIn"]),
     handleClientLoad() {
       gapi.load("client:auth2", this.initClient);
     },
@@ -41,16 +41,16 @@ export default {
           scope: gcApi.SCOPES
         })
         .then(
-          (r) => {
+          r => {
             gapi.auth2
               .getAuthInstance()
               .isSignedIn.listen(
-                this.setIsLoggedIn(
+                this.setIsSignedIn(
                   gapi.auth2.getAuthInstance().isSignedIn.get()
                 )
               );
           },
-          (e) =>  {
+          e => {
             console.log(e);
           }
         );

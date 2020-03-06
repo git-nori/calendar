@@ -27,7 +27,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => !record.meta.isPublic && !store.state.authModule.isLoggedIn)) {
+  if (to.matched.some(record => !record.meta.isPublic && !store.state.authModule.isSignedIn)) {
     next({ path: '/', query: { redirect: to.fullPath } })
   } else {
     next()
