@@ -87,14 +87,11 @@ export default {
     ...mapState("authModule", ["isSignedIn"])
   },
   methods: {
-    ...mapActions("authModule", ["signin", "setIsSignedIn"]),
+    ...mapActions("authModule", ["signin"]),
     clickSignin() {
       this.signin().then(() => {
-        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-          // 認証が成功した場合、redirect先 or home画面に遷移する
-          this.setIsSignedIn(true)
-          this.$router.push(this.$route.query.redirect || '/home')
-        }
+        // 認証が成功した場合、redirect先 or home画面に遷移する
+        this.$router.push(this.$route.query.redirect || "/home");
       });
     }
   }
