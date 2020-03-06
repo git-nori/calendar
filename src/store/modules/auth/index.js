@@ -33,7 +33,7 @@ const actions = {
       });
     });
   },
-  setAuth ({ commit }, isLoggedIn) {
+  setIsLoggedIn ({ commit }, isLoggedIn) {
     commit('SET_IS_LOGGED_IN', {
       isLoggedIn: isLoggedIn
     })
