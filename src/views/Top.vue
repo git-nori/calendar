@@ -5,8 +5,8 @@
       <template v-slot:lead>This is an app that makes Google Calendar easy to use</template>
       <hr class="mt-4" />
       <b-button
-        v-if="!isLoggedIn"
-        @click="signin()"
+        v-if="!isSignedIn"
+        @click="clickSignin()"
         class="mt-3"
         variant="outline-secondary"
         size="sm"
@@ -14,7 +14,9 @@
     </b-jumbotron>
     <b-container fluid>
       <b-row class="mx-3 mb-5">
-        <b-col class="text-center"><h2 class="display-4">SERVICES</h2></b-col>
+        <b-col class="text-center">
+          <h2 class="display-4">SERVICES</h2>
+        </b-col>
       </b-row>
       <b-row class="mx-3">
         <b-col sm="12">
@@ -82,10 +84,19 @@ export default {
     // ...mapState('authModule', {
     //   isLoggedIn: 'isLoggedIn'
     // }),
-    ...mapState("authModule", ["isLoggedIn"]),
+    ...mapState("authModule", ["isSignedIn"])
   },
   methods: {
-    ...mapActions("authModule", ["signin"]),
+    ...mapActions("authModule", ["signin", "setIsSignedIn"]),
+    clickSignin() {
+      this.signin().then(() => {
+        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+          // 認証が成功した場合、redirect先 or home画面に遷移する
+          this.setIsSignedIn(true)
+          this.$router.push(this.$route.query.redirect || '/home')
+        }
+      });
+    }
   }
 };
 </script>

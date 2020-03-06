@@ -1,5 +1,5 @@
 const state = {
-  isLoggedIn: false,
+  isSignedIn: false,
 };
 
 const getters = {
@@ -7,31 +7,26 @@ const getters = {
 
 const mutations = {
   SET_IS_LOGGED_IN (state, payload) {
-    state.isLoggedIn = payload.isLoggedIn
+    state.isSignedIn = payload.isSignedIn
   }
 };
 
 const actions = {
-  signin ({ commit }) {
-    Promise.resolve(gapi.auth2.getAuthInstance().signIn()).then(_ => {
-      // signIn処理実行後にloginステータスを変更する
-      commit('SET_IS_LOGGED_IN', {
-        isLoggedIn: true
-      });
-    });
+  async signin ({ commit }) {
+    await gapi.auth2.getAuthInstance().signIn()
   },
 
   signout ({ commit }) {
     Promise.resolve(gapi.auth2.getAuthInstance().signOut()).then(_ => {
       commit('SET_IS_LOGGED_IN', {
-        isLoggedIn: false
+        isSignedIn: false
       });
     });
   },
 
-  setIsLoggedIn ({ commit }, isLoggedIn) {
+  setIsSignedIn ({ commit }, isSignedIn) {
     commit('SET_IS_LOGGED_IN', {
-      isLoggedIn: isLoggedIn
+      isSignedIn: isSignedIn
     })
   }
 };
