@@ -12,27 +12,23 @@ const mutations = {
 };
 
 const actions = {
-  /**
-   *  Sign in the user upon button click.
-   */
-  signin ({ commit, rootState }) {
-    Promise.resolve(rootState.apiModule.api.auth2.getAuthInstance().signIn()).then(_ => {
+  signin ({ commit }) {
+    Promise.resolve(gapi.auth2.getAuthInstance().signIn()).then(_ => {
+      // signIn処理実行後にloginステータスを変更する
       commit('SET_IS_LOGGED_IN', {
         isLoggedIn: true
       });
     });
   },
 
-  /**
-   *  Sign out the user upon button click.
-   */
-  signout ({ commit, rootState }) {
-    Promise.resolve(rootState.apiModule.api.auth2.getAuthInstance().signOut()).then(_ => {
+  signout ({ commit }) {
+    Promise.resolve(gapi.auth2.getAuthInstance().signOut()).then(_ => {
       commit('SET_IS_LOGGED_IN', {
         isLoggedIn: false
       });
     });
   },
+
   setIsLoggedIn ({ commit }, isLoggedIn) {
     commit('SET_IS_LOGGED_IN', {
       isLoggedIn: isLoggedIn
