@@ -20,7 +20,7 @@ const actions = {
     })
   },
 
-  async signout ({ commit }) {
+  async signout ({ commit, dispatch }) {
     await gapi.auth2.getAuthInstance().signOut()
     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
       dispatch('setIsSignedIn', false)

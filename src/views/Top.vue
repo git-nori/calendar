@@ -11,6 +11,13 @@
         variant="outline-secondary"
         size="sm"
       >Sign In</b-button>
+      <b-button
+        v-else
+        @click="clickSignout()"
+        class="mt-3"
+        variant="outline-secondary"
+        size="sm"
+      >Sign Out</b-button>
     </b-jumbotron>
     <b-container fluid>
       <b-row class="mx-3 mb-5">
@@ -87,12 +94,18 @@ export default {
     ...mapState("authModule", ["isSignedIn"])
   },
   methods: {
-    ...mapActions("authModule", ["signin"]),
+    ...mapActions("authModule", ["signin", "signout"]),
     clickSignin() {
       this.signin().then(() => {
         // 認証が成功した場合、redirect先 or home画面に遷移する
         this.$router.push(this.$route.query.redirect || "/home");
       });
+    },
+    clickSignout() {
+      this.signout().then(() => {
+        // 認証解除が成功した場合
+        this.$router.push("/");
+      })
     }
   }
 };

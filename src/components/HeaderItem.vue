@@ -10,8 +10,8 @@
           <b-nav-item v-if="isSignedIn" :to="{name:'home'}">Home</b-nav-item>
           <b-nav-item href="#">About</b-nav-item>
           <b-nav-form>
-            <b-button v-if="!isSignedIn" @click="signin()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign In</b-button>
-            <b-button v-if="isSignedIn" @click="signout()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign Out</b-button>
+            <b-button v-if="!isSignedIn" @click="clickSignin()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign In</b-button>
+            <b-button v-if="isSignedIn" @click="clickSignout()" class="mt-3 mt-md-0 ml-md-3" variant="outline-secondary" size="sm">Sign Out</b-button>
           </b-nav-form>
         </b-navbar-nav>
       </b-collapse>
@@ -28,7 +28,19 @@ export default {
     ...mapState('authModule', ['isSignedIn'])
   },
   methods: {
-    ...mapActions('authModule', ['signin', 'signout'])
+    ...mapActions('authModule', ['signin', 'signout']),
+    clickSignin() {
+      this.signin().then(() => {
+        // 認証が成功した場合、redirect先 or home画面に遷移する
+        this.$router.push(this.$route.query.redirect || "/home");
+      });
+    },
+    clickSignout() {
+      this.signout().then(() => {
+        // 認証解除が成功した場合
+        this.$router.push("/");
+      })
+    }
   },
 };
 </script>
