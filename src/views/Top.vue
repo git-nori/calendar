@@ -83,11 +83,9 @@ export default {
     //   isLoggedIn: 'isLoggedIn'
     // }),
     ...mapState("authModule", ["isLoggedIn"]),
-    ...mapState("calendarModule", ["items"])
   },
   methods: {
     ...mapActions("authModule", ["signin"]),
-    ...mapActions("calendarModule", ["getData"])
   }
 };
 </script>
