@@ -5,27 +5,17 @@
       <template v-slot:lead>This is an app that makes Google Calendar easy to use</template>
       <hr class="mt-4" />
       <template v-if="!isSignedIn">
-        <b-button
-          @click="clickSignin()"
-          class="mt-3"
-          variant="outline-secondary"
-          size="sm"
-        >Sign In</b-button>
+        <b-button @click="clickSignin()" class="mt-3" variant="outline-secondary" size="sm">Sign In</b-button>
       </template>
       <template v-else>
-        <b-button
-          :to="{name: 'home'}"
-          class="mt-3 mx-3"
-          variant="outline-info"
-          size="sm"
-        >Home</b-button>
+        <b-button :to="{name: 'home'}" class="mt-3 mx-3" variant="outline-info" size="sm">Home</b-button>
         <b-button
           @click="clickSignout()"
           class="mt-3 mx-3"
           variant="outline-secondary"
           size="sm"
         >Sign Out</b-button>
-      </template>    
+      </template>
     </b-jumbotron>
     <b-container fluid>
       <b-row class="mx-3 mb-5">
@@ -105,15 +95,21 @@ export default {
     ...mapActions("authModule", ["signin", "signout"]),
     clickSignin() {
       this.signin().then(() => {
-        // 認証が成功した場合、redirect先 or home画面に遷移する
-        this.$router.push(this.$route.query.redirect || "/home");
+        if (this.isSignedIn) {
+          // 認証済みの場合、redirect先 or home画面に遷移する
+          this.$router.push(this.$route.query.redirect || "/home");
+        }
       });
     },
     clickSignout() {
       this.signout().then(() => {
-        // 認証解除が成功した場合
-        this.$router.push("/");
-      })
+        if (!this.isSignedIn) {
+          // 認証解除が成功した場合
+          if (this.$route.path !== "/") {
+            this.$router.push("/");
+          }
+        }
+      });
     }
   }
 };

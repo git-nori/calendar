@@ -13,18 +13,13 @@ const mutations = {
 
 const actions = {
   async signin ({ commit, dispatch }) {
-    await gapi.auth2.getAuthInstance().signIn().then(() => {
-      if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-        dispatch('setIsSignedIn', true)
-      }
-    })
+    await gapi.auth2.getAuthInstance().signIn()
+    dispatch('setIsSignedIn', gapi.auth2.getAuthInstance().isSignedIn.get())
   },
 
   async signout ({ commit, dispatch }) {
     await gapi.auth2.getAuthInstance().signOut()
-    if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-      dispatch('setIsSignedIn', false)
-    }
+    dispatch('setIsSignedIn', gapi.auth2.getAuthInstance().isSignedIn.get())
   },
 
   setIsSignedIn ({ commit }, isSignedIn) {
