@@ -33,14 +33,14 @@ export default {
           key: "start",
           sortable: true,
           formatter: value => {
-            return this.formatDate(new Date(value), 'yyyy/MM/dd HH:mm:ss')
+            return this.formatDate(new Date(value), 'yy/MM/dd HH:mm')
           }
         },
         {
           key: "end",
           sortable: true,
           formatter: value => {
-            return this.formatDate(new Date(value), 'yyyy/MM/dd HH:mm:ss')
+            return this.formatDate(new Date(value), 'yy/MM/dd HH:mm')
           }
         },
         { key: "show_details", sortable: false, class: "text-right" }
@@ -71,6 +71,7 @@ export default {
      */
     formatDate(date, format) {
       format = format.replace(/yyyy/g, date.getFullYear());
+      format = format.replace(/yy/g, (date.getFullYear().toString().substr(-2)));
       format = format.replace(/MM/g, ("0" + (date.getMonth() + 1)).slice(-2));
       format = format.replace(/dd/g, ("0" + date.getDate()).slice(-2));
       format = format.replace(/HH/g, ("0" + date.getHours()).slice(-2));
