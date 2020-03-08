@@ -45,9 +45,9 @@ export default {
       termType: null,
       chartOptions: [
         { value: null, text: "Select chart" },
-        { value: "Donuts", text: "Donuts" },
-        { value: "Line", text: "Line" },
-        { value: "Bar", text: "Bar" }
+        { value: "PieChart", text: "Pie" },
+        { value: "LineChart", text: "Line" },
+        { value: "BarChart", text: "Bar" }
       ],
       termOptions: [
         { value: null, text: "Select term" },
