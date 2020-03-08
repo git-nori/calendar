@@ -12,8 +12,8 @@
       hover
       head-variant="light"
     >
-      <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="showDetail(row)" variant="outline-secondary">Details</b-button>
+      <template v-slot:cell(modify)="row">
+        <b-button size="sm" @click="modifyEvent(row)" variant="outline-secondary">Modify</b-button>
       </template>
     </b-table>
   </div>
@@ -25,8 +25,8 @@ export default {
   name: "ChartDataTable",
   data() {
     return {
-      sortBy: "hour",
-      sortDesc: false,
+      sortBy: "end",
+      sortDesc: true,
       fields: [
         { key: "summary", sortable: true },
         {
@@ -43,7 +43,7 @@ export default {
             return this.formatDate(new Date(value), 'yy/MM/dd HH:mm')
           }
         },
-        { key: "show_details", sortable: false, class: "text-right" }
+        { key: "modify", sortable: false, class: "text-right" }
       ]
       // items: [
       //   { term: "January", hour: 28 },
@@ -61,9 +61,9 @@ export default {
     };
   },
   methods: {
-    showDetail(row) {
+    modifyEvent(row) {
       // 選択した項目についてモーダルを表示する
-      console.log(row.item.term, row.item.hour);
+      console.log(row.item.summary, row.item.start, row.item.end);
     },
     /**
      * 引数のフォーマットに応じて日付オブジェクトをフォーマットする
