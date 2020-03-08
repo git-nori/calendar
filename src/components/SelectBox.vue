@@ -2,7 +2,8 @@
   <b-container fluid class="mt-3">
     <b-row>
       <b-col md="4">
-        <b-form-select size="sm" v-model="chartType" :options="chartOptions"></b-form-select>
+        <!-- chartTypeの切り替えで表示するコンポーネントを切り替える -->
+        <b-form-select size="sm" v-model="chartType" :options="chartOptions" @change="setChartType({ chartType: chartType })"></b-form-select>
       </b-col>
       <b-col md="4" class="mt-3 mt-md-0">
         <b-form-select size="sm" v-model="termType" :options="termOptions"></b-form-select>

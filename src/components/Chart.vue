@@ -12,6 +12,7 @@
 import BarChart from "@/components/chart/BarChart.vue";
 import LineChart from "@/components/chart/LineChart.vue";
 import PieChart from "@/components/chart/PieChart.vue";
+import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -96,9 +97,9 @@ export default {
     PieChart
   },
   computed: {
-    chartType(){
-      return 'PieChart'
-    }
+    ...mapState('calendarModule', {
+      chartType: 'chartType'
+    })
   },
 };
 </script>
