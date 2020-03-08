@@ -28,8 +28,14 @@ export default {
       sortDesc: false,
       fields: [
         { key: "month", sortable: false },
-        { key: "hour", sortable: true },
-        { key: "show_details", sortable: false }
+        {
+          key: "hour",
+          sortable: true,
+          formatter(value, key, item) {
+            return value + "h";
+          }
+        },
+        { key: "show_details", sortable: false, class: "text-right" }
       ],
       items: [
         { month: "January", hour: 28 },
