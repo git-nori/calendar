@@ -2,7 +2,7 @@
   <div>
     <!-- responsive => overflow-x, sticky-header => overflow-y and FixedHeader -->
     <b-table
-      :items="items"
+      :items="getChartTableData"
       :fields="fields"
       :sort-desc.sync="sortDesc"
       :sort-by.sync="sortBy"
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "ChartDataTable",
   data() {
@@ -27,36 +28,63 @@ export default {
       sortBy: "hour",
       sortDesc: false,
       fields: [
-        { key: "month", sortable: false },
+        { key: "summary", sortable: false },
         {
-          key: "hour",
+          key: "start",
           sortable: true,
-          formatter(value, key, item) {
-            return value + "h";
+          formatter: value => {
+            return this.formatDate(new Date(value), 'yyyy/MM/dd HH:mm:ss')
+          }
+        },
+        {
+          key: "end",
+          sortable: true,
+          formatter: value => {
+            return this.formatDate(new Date(value), 'yyyy/MM/dd HH:mm:ss')
           }
         },
         { key: "show_details", sortable: false, class: "text-right" }
-      ],
-      items: [
-        { month: "January", hour: 28 },
-        { month: "February", hour: 20 },
-        { month: "March", hour: 30 },
-        { month: "April", hour: 40 },
-        { month: "May", hour: 80 },
-        { month: "March", hour: 30 },
-        { month: "March", hour: 30 },
-        { month: "March", hour: 30 },
-        { month: "March", hour: 30 },
-        { month: "March", hour: 30 },
-        { month: "March", hour: 30 }
       ]
+      // items: [
+      //   { term: "January", hour: 28 },
+      //   { term: "February", hour: 20 },
+      //   { term: "March", hour: 30 },
+      //   { term: "April", hour: 40 },
+      //   { term: "May", hour: 80 },
+      //   { term: "March", hour: 30 },
+      //   { term: "March", hour: 30 },
+      //   { term: "March", hour: 30 },
+      //   { term: "March", hour: 30 },
+      //   { term: "March", hour: 30 },
+      //   { term: "March", hour: 30 }
+      // ]
     };
   },
   methods: {
     showDetail(row) {
       // 選択した項目についてモーダルを表示する
-      console.log(row.item.month, row.item.hour);
+      console.log(row.item.term, row.item.hour);
+    },
+    /**
+     * 引数のフォーマットに応じて日付オブジェクトをフォーマットする
+     * date: 日付オブジェクト, format: 書式フォーマット
+     */
+    formatDate(date, format) {
+      format = format.replace(/yyyy/g, date.getFullYear());
+      format = format.replace(/MM/g, ("0" + (date.getMonth() + 1)).slice(-2));
+      format = format.replace(/dd/g, ("0" + date.getDate()).slice(-2));
+      format = format.replace(/HH/g, ("0" + date.getHours()).slice(-2));
+      format = format.replace(/mm/g, ("0" + date.getMinutes()).slice(-2));
+      format = format.replace(/ss/g, ("0" + date.getSeconds()).slice(-2));
+      format = format.replace(
+        /SSS/g,
+        ("00" + date.getMilliseconds()).slice(-3)
+      );
+      return format;
     }
+  },
+  computed: {
+    ...mapGetters("calendarModule", ["getChartTableData"])
   }
 };
 </script>
