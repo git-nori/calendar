@@ -28,7 +28,7 @@ export default {
       sortBy: "hour",
       sortDesc: false,
       fields: [
-        { key: "summary", sortable: false },
+        { key: "summary", sortable: true },
         {
           key: "start",
           sortable: true,
