@@ -23,7 +23,7 @@
         <b-button
           :disabled="isDisabledExport"
           @click="exportData"
-          class="mx-1"
+          class="ml-1"
           variant="outline-info"
           size="sm"
         >
