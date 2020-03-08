@@ -1,13 +1,13 @@
 <template>
   <b-container fluid class="mt-3">
     <b-row>
-      <b-col sm="4">
+      <b-col md="4">
         <b-form-select size="sm" v-model="chartType" :options="chartOptions"></b-form-select>
       </b-col>
-      <b-col sm="4" class="mt-3 mt-sm-0">
+      <b-col md="4" class="mt-3 mt-md-0">
         <b-form-select size="sm" v-model="termType" :options="termOptions"></b-form-select>
       </b-col>
-      <b-col sm="4" class="text-right mt-3 mt-sm-0">
+      <b-col md="4" class="text-right mt-3 mt-md-0">
         <b-button
           :disabled="isDisabledShowChart"
           @click="showChart"
