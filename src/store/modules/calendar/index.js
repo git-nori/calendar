@@ -1,5 +1,6 @@
 const state = {
   items: [],
+  chartType: null
 };
 
 const getters = {
@@ -9,6 +10,10 @@ const mutations = {
   SET_ITEMS (state, payload) {
     console.log(payload)
     state.items = payload
+  },
+  SET_CHART_TYPE (state, payload) {
+    console.log(payload)
+    state.chartType = payload
   }
 };
 
@@ -18,21 +23,24 @@ const actions = {
    * the authorized user's calendar. If no events are found an
    * appropriate message is printed.
    */
-  getData ({ commit, rootState }) {
-    const api = rootState.apiModule.api
-    api.client.calendar.events
+  getData ({ commit }, { timeMin }) {
+    gapi.client.calendar.events
       .list({
         calendarId: "primary",
-        timeMin: new Date().toISOString(),
+        timeMin: timeMin.toISOString(),
+        timeMax: new Date().toISOString(),
         showDeleted: false,
         singleEvents: true,
-        maxResults: 10,
+        // maxResults: 1000,
         orderBy: "startTime"
       })
       .then(response => {
         commit('SET_ITEMS', response.result.items)
       });
   },
+  setChartType ({ commit }, { chartType }) {
+    commit('SET_CHART_TYPE', chartType)
+  }
 };
 
 const calendarModule = {

@@ -1,6 +1,6 @@
 <template>
   <div>
-      <select-box @showChart="showChart"></select-box>
+      <select-box></select-box>
   </div>
 </template>
 
@@ -13,9 +13,6 @@ export default {
     SelectBox
   },
   methods: {
-    showChart(types){
-      // チャートを表示する
-    }
   },
 };
 </script>
