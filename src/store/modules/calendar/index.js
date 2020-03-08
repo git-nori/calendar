@@ -4,15 +4,22 @@ const state = {
 };
 
 const getters = {
+  getChartTableData: state => state.items
 };
 
 const mutations = {
   SET_ITEMS (state, payload) {
+    // googleCalendarのデータからイベント名, 開始日時, 終了日時を抽出
     console.log(payload)
-    state.items = payload
+    payload.map(e => {
+      let obj = {}
+      obj.summary = e.summary
+      obj.start = e.start.dateTime
+      obj.end = e.end.dateTime
+      state.items.push(obj)
+    })
   },
   SET_CHART_TYPE (state, payload) {
-    console.log(payload)
     state.chartType = payload
   }
 };
@@ -23,7 +30,8 @@ const actions = {
    * the authorized user's calendar. If no events are found an
    * appropriate message is printed.
    */
-  getData ({ commit }, { timeMin }) {
+  getData ({ state, commit }, { timeMin }) {
+    state.items = [] // itemsの中身を初期化
     gapi.client.calendar.events
       .list({
         calendarId: "primary",
