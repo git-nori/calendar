@@ -4,7 +4,30 @@ const state = {
 };
 
 const getters = {
-  getChartTableData: state => state.items
+  // チャートテーブル表示用データを返す
+  getChartTableData: state => state.items,
+  // チャート表示用データを返す
+  getChartData: state => {
+    // observerにならないようstateからデータを取得
+    let data = JSON.parse(JSON.stringify(state.items))
+
+    // 日時が設定されているデータのみを抽出
+    data = data.filter(e => {
+      const startTime = new Date(e.start)
+      const endTime = new Date(e.end)
+      return startTime.toString() !== 'Invalid Date' && endTime.toString() !== 'Invalid Date'
+    })
+
+    // summary: hoursとなるオブジェクトを返却
+    return data.reduce((obj, e) => {
+      const summary = e.summary
+      const startTime = new Date(e.start)
+      const endTime = new Date(e.end)
+      const hours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)
+      obj[summary] = obj.summary === summary ? obj[summary] + hours : hours
+      return obj
+    }, {})
+  }
 };
 
 const mutations = {
