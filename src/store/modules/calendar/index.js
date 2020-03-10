@@ -18,14 +18,15 @@ const getters = {
 
 const mutations = {
   SET_ITEMS (state, payload) {
-    // googleCalendarのデータからイベント名, 開始日時, 終了日時を抽出
-    console.log(payload)
-    payload.map(e => {
+    // googleCalendarのデータからid, sequence(updateの際に使用), イベント名, 開始日時, 終了日時を抽出
+    state.items = payload.map(e => {
       let obj = {}
+      obj.id = e.id
+      obj.sequence = e.sequence
       obj.summary = e.summary
       obj.start = e.start.dateTime
       obj.end = e.end.dateTime
-      state.items.push(obj)
+      return obj
     })
   },
   SET_CHART_TYPE (state, payload) {
