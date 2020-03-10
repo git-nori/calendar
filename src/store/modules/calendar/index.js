@@ -7,26 +7,12 @@ const getters = {
   // チャートテーブル表示用データを返す
   getChartTableData: state => state.items,
   // チャート表示用データを返す
-  getChartData: state => {
-    // observerにならないようstateからデータを取得
-    let data = JSON.parse(JSON.stringify(state.items))
-
-    // 日時が設定されているデータのみを抽出
-    data = data.filter(e => {
-      const startTime = new Date(e.start)
-      const endTime = new Date(e.end)
-      return startTime.toString() !== 'Invalid Date' && endTime.toString() !== 'Invalid Date'
+  filteredChartData: state => {
+    // 日時の入ってるデータのみ抽出
+    return JSON.parse(JSON.stringify(state.items)).filter(el => {
+      return new Date(el.start).toString() !== 'Invalid Date' &&
+        new Date(el.end).toString() !== 'Invalid Date'
     })
-
-    // summary: hoursとなるオブジェクトを返却
-    return data.reduce((obj, e) => {
-      const summary = e.summary
-      const startTime = new Date(e.start)
-      const endTime = new Date(e.end)
-      const hours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)
-      obj[summary] = obj.summary === summary ? obj[summary] + hours : hours
-      return obj
-    }, {})
   }
 };
 
@@ -54,7 +40,6 @@ const actions = {
    * appropriate message is printed.
    */
   getData ({ state, commit }, { timeMin }) {
-    state.items = [] // itemsの中身を初期化
     gapi.client.calendar.events
       .list({
         calendarId: "primary",
