@@ -4,7 +4,7 @@
       <b-spinner v-if="!loaded" type="grow" variant="secondary" label="loading"></b-spinner>
     </div>
     <!-- chartTypeに応じたチャートを表示する -->
-    <component :is="chartType" v-if="loaded" :chartData="barData" :options="options" />
+    <component :is="chartType" v-if="loaded && chartData.datasets.length" :chartData="chartData" :options="options" />
   </div>
 </template>
 
@@ -18,75 +18,14 @@ export default {
   data() {
     return {
       loaded: true,
-      barData: {
-        labels: ["January", "February", "March", "April", "May", "March"],
-        datasets: [
-          {
-            label: "Sample1",
-            data: [28, 20, 30, 40, 80, 30],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
-            ],
-            borderWidth: 1
-          }
-        ]
+      chartFuncs: {
+        BarChart: this.setBarData,
+        LineChart: this.setLineData,
+        PieChart: this.setPieData
       },
-      pieData: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [
-          {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
-            ],
-            borderWidth: 1
-          }
-        ]
-      },
-      lineData: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July"
-        ],
-        datasets: [
-          {
-            label: "Data One",
-            backgroundColor: "#f87979",
-            data: [40, 39, 10, 40, 39, 80, 40]
-          }
-        ]
+      chartData: {
+        labels: [],
+        datasets: []
       },
       options: { responsive: true, maintainAspectRatio: false }
     };
@@ -102,7 +41,74 @@ export default {
      * ...mapState('calendarModule', {chartType: 'chartType'})
      */
     ...mapState("calendarModule", ["chartType"]),
-    ...mapGetters("calendarModule", ["getChartData"]),
+    ...mapGetters("calendarModule", ["filteredChartData"])
   },
+  watch: {
+    chartType() {
+      if (this.isReadySetChartData()) {
+        // チャート表示用にデータをセットする
+        this.chartFuncs[this.chartType]();
+      }
+    },
+    filteredChartData() {
+      if (this.isReadySetChartData()) {
+        // チャート表示用にデータをセットする
+        this.chartFuncs[this.chartType]();
+      }
+    }
+  },
+  methods: {
+    // 表示するチャートデータをセット可否フラグ
+    isReadySetChartData() {
+      return (
+        this.chartFuncs[this.chartType] != null && this.filteredChartData.length
+      );
+    },
+    setBarData() {
+      console.log("setLineData");
+    },
+    setLineData() {
+      console.log("setLineData");
+    },
+    setPieData() {
+      // {summary: hours}の連想配列を格納
+      const tempoData = this.filteredChartData.reduce((res, current) => {
+        // 経過時間(h)を格納
+        const startTime = new Date(current.start).getTime();
+        const endTime = new Date(current.end).getTime();
+        const diffHours = (endTime - startTime) / (1000 * 60 * 60);
+
+        const element = res.find(p => p.summary === current.summary);
+        if (element) {
+          // 同一キーがある場合
+          element.hours += diffHours;
+        } else {
+          res.push({
+            summary: current.summary,
+            hours: diffHours
+          });
+        }
+        return res;
+      }, []);
+
+      this.chartData = {
+        labels: tempoData.map(elm => elm.summary),
+        datasets: [
+          {
+            data: tempoData.map(elm => elm.hours),
+            backgroundColor: tempoData.map(() => this.getRandomColors()),
+            borderColor: this.backgroundColor,
+            borderWidth: 1
+          }
+        ]
+      };
+    },
+    getRandomColors() {
+      var r = Math.floor(Math.random() * 255);
+      var g = Math.floor(Math.random() * 255);
+      var b = Math.floor(Math.random() * 255);
+      return "rgba(" + r + "," + g + "," + b + ", 0.2)";
+    }
+  }
 };
 </script>
