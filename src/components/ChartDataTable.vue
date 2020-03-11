@@ -45,19 +45,6 @@ export default {
         },
         { key: "modify", sortable: false, class: "text-right" }
       ]
-      // items: [
-      //   { term: "January", hour: 28 },
-      //   { term: "February", hour: 20 },
-      //   { term: "March", hour: 30 },
-      //   { term: "April", hour: 40 },
-      //   { term: "May", hour: 80 },
-      //   { term: "March", hour: 30 },
-      //   { term: "March", hour: 30 },
-      //   { term: "March", hour: 30 },
-      //   { term: "March", hour: 30 },
-      //   { term: "March", hour: 30 },
-      //   { term: "March", hour: 30 }
-      // ]
     };
   },
   methods: {
