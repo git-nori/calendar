@@ -125,7 +125,7 @@ export default {
               );
               return [
                 "Hours: " + selectedVal + "h",
-                "Percent: " + (selectedVal / totalDataVal) * 100 + "%"
+                "Percent: " + ((selectedVal / totalDataVal) * 100).toFixed(1) + "%"
               ];
             }
           }
