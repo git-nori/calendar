@@ -4,7 +4,12 @@
       <b-spinner v-if="!loaded" type="grow" variant="secondary" label="loading"></b-spinner>
     </div>
     <!-- chartTypeに応じたチャートを表示する -->
-    <component :is="chartType" v-if="loaded && chartData.datasets.length" :chartData="chartData" :options="options" />
+    <component
+      :is="chartType"
+      v-if="loaded && chartData.datasets.length"
+      :chartData="chartData"
+      :options="options"
+    />
   </div>
 </template>
 
@@ -101,6 +106,30 @@ export default {
             borderWidth: 1
           }
         ]
+      };
+
+      this.options = {
+        tooltips: {
+          enabled: true,
+          // colorBox of tooltip's label option
+          displayColors: false,
+          callbacks: {
+            title: (tooltipItem, data) => {
+              return data.labels[tooltipItem[0].index];
+            },
+            label: (tooltipItem, data) => {
+              let selectedDatasets = data.datasets[tooltipItem.datasetIndex];
+              let selectedVal = selectedDatasets.data[tooltipItem.index];
+              let totalDataVal = selectedDatasets.data.reduce(
+                (accumulator, elm) => accumulator + elm
+              );
+              return [
+                "Hours: " + selectedVal + "h",
+                "Percent: " + (selectedVal / totalDataVal) * 100 + "%"
+              ];
+            }
+          }
+        }
       };
     },
     getRandomColors() {
