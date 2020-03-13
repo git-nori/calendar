@@ -8,7 +8,7 @@
 <script>
 import HeaderItem from "@/components/HeaderItem.vue";
 import { mapActions, mapState } from "vuex";
-import gcApi from "@/api/gcApi.js";
+import gcApi from "@/service/api/gcApi.js";
 
 export default {
   name: "app",
