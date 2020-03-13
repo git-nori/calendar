@@ -148,24 +148,36 @@ export default {
     },
     // チャート生成に必要なDic型データを返す
     getBaseChartDataDic() {
-      return this.filteredChartData.reduce((res, current) => {
-        // 経過時間(h)を格納
-        const startTime = new Date(current.start).getTime();
-        const endTime = new Date(current.end).getTime();
-        const diffHours = (endTime - startTime) / (1000 * 60 * 60);
-
-        const element = res.find(p => p.summary === current.summary);
-        if (element) {
-          // 同一キーがある場合
-          element.hours += diffHours;
-        } else {
-          res.push({
-            summary: current.summary,
-            hours: diffHours
-          });
+      function compareSummarys(a, b) {
+        if (a.summary.toUpperCase() < b.summary.toUpperCase()) {
+          return 1;
+        } else if (a.summary.toUpperCase() > b.summary.toUpperCase()) {
+          return -1;
         }
-        return res;
-      }, []);
+        return 0;
+      }
+
+      // テーブルのデータに合わせるため、項目名順にソート
+      return [...this.filteredChartData]
+        .sort(compareSummarys)
+        .reduce((res, current) => {
+          // 経過時間(h)を格納
+          const startTime = new Date(current.start).getTime();
+          const endTime = new Date(current.end).getTime();
+          const diffHours = (endTime - startTime) / (1000 * 60 * 60);
+
+          const element = res.find(p => p.summary === current.summary);
+          if (element) {
+            // 同一キーがある場合
+            element.hours += diffHours;
+          } else {
+            res.push({
+              summary: current.summary,
+              hours: diffHours
+            });
+          }
+          return res;
+        }, []);
     },
     // チャート表示のオプションを返す
     getBaseChartOptions() {

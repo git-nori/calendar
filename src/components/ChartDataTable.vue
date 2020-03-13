@@ -26,7 +26,7 @@ export default {
   name: "ChartDataTable",
   data() {
     return {
-      sortBy: "end",
+      sortBy: "summary",
       sortDesc: true,
       fields: [
         { key: "summary", sortable: true },
