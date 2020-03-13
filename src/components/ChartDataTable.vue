@@ -4,8 +4,8 @@
     <b-table
       :items="getChartTableData"
       :fields="fields"
-      :sort-desc.sync="sortDesc"
       :sort-by.sync="sortBy"
+      :sort-compare="mySortCompare"
       sort-icon-left
       responsive
       sticky-header="350px"
@@ -27,21 +27,20 @@ export default {
   data() {
     return {
       sortBy: "summary",
-      sortDesc: true,
       fields: [
         { key: "summary", sortable: true },
         {
           key: "start",
           sortable: true,
           formatter: value => {
-            return this.formatDate(new Date(value), 'yy/MM/dd HH:mm')
+            return this.formatDate(new Date(value), "yy/MM/dd HH:mm");
           }
         },
         {
           key: "end",
           sortable: true,
           formatter: value => {
-            return this.formatDate(new Date(value), 'yy/MM/dd HH:mm')
+            return this.formatDate(new Date(value), "yy/MM/dd HH:mm");
           }
         },
         { key: "modify", sortable: false, class: "text-right" }
@@ -59,7 +58,13 @@ export default {
      */
     formatDate(date, format) {
       format = format.replace(/yyyy/g, date.getFullYear());
-      format = format.replace(/yy/g, (date.getFullYear().toString().substr(-2)));
+      format = format.replace(
+        /yy/g,
+        date
+          .getFullYear()
+          .toString()
+          .substr(-2)
+      );
       format = format.replace(/MM/g, ("0" + (date.getMonth() + 1)).slice(-2));
       format = format.replace(/dd/g, ("0" + date.getDate()).slice(-2));
       format = format.replace(/HH/g, ("0" + date.getHours()).slice(-2));
@@ -70,6 +75,30 @@ export default {
         ("00" + date.getMilliseconds()).slice(-3)
       );
       return format;
+    },
+    mySortCompare(a, b, key) {
+      if (key === "summary") {
+        // summary列でのソートの場合
+        if (
+          typeof a["start"] === "undefined" ||
+          typeof a["end"] === "undefined"
+        )
+          return 1;
+        if (
+          typeof b["start"] === "undefined" ||
+          typeof b["end"] === "undefined"
+        )
+          return -1;
+
+        if (a[key].toUpperCase() < b[key].toUpperCase()) {
+          return 1;
+        } else if (a[key].toUpperCase() > b[key].toUpperCase()) {
+          return -1;
+        }
+        return 0;
+      } else {
+        return false;
+      }
     }
   },
   computed: {
