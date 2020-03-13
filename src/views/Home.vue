@@ -2,7 +2,7 @@
   <div>
     <select-box></select-box>
     <b-container fluid class="mt-4">
-      <b-row>
+      <b-row class="mx-md-3">
         <b-col md="6">
           <chart></chart>
         </b-col>
