@@ -11,6 +11,7 @@
       sticky-header="350px"
       hover
       head-variant="light"
+      class="table-sm text-nowrap"
     >
       <template v-slot:cell(modify)="row">
         <b-button size="sm" @click="modifyEvent(row)" variant="outline-secondary">Modify</b-button>
