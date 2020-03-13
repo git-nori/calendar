@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="mt-3">
+  <b-container class="mt-3">
     <b-row>
       <b-col md="4">
         <!-- chartTypeの切り替えで表示するコンポーネントを切り替える -->
