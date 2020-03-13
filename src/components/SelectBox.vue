@@ -3,10 +3,20 @@
     <b-row>
       <b-col md="4">
         <!-- chartTypeの切り替えで表示するコンポーネントを切り替える -->
-        <b-form-select size="sm" v-model="chartType" :options="chartOptions" @change="setChartType({ chartType: chartType })"></b-form-select>
+        <b-form-select
+          size="sm"
+          :value="chartType"
+          :options="chartOptions"
+          @change="setChartType({ chartType: $event })"
+        ></b-form-select>
       </b-col>
       <b-col md="4" class="mt-3 mt-md-0">
-        <b-form-select size="sm" v-model="termType" :options="termOptions"></b-form-select>
+        <b-form-select
+          size="sm"
+          :value="termType"
+          :options="termOptions"
+          @change="setTermType({ termType: $event })"
+        ></b-form-select>
       </b-col>
       <b-col md="4" class="text-right mt-3 mt-md-0">
         <b-button
@@ -36,14 +46,13 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
+import timeUtils from "@/service/time/TimeUtil.js";
 
 export default {
   name: "SelectBox",
   data() {
     return {
-      chartType: null,
-      termType: null,
       chartOptions: [
         { value: null, text: "Select chart" },
         { value: "PieChart", text: "Pie" },
@@ -60,6 +69,7 @@ export default {
     };
   },
   computed: {
+    ...mapState("calendarModule", ["chartType", "termType"]),
     isDisabledShowChart() {
       // chartTypeとtermTypeが選択済みの場合showChartボタンを活性化する
       return !(this.chartType !== null && this.termType !== null);
@@ -70,9 +80,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions("calendarModule", ["getData", "setChartType"]),
+    ...mapActions("calendarModule", ["getData", "setChartType", "setTermType"]),
     showChart() {
-      let timeMin = this.getTimeMin(); // 集計開始日
+      let timeMin = timeUtils.getTimeMin(this.termType); // 集計開始日
       this.getData({ timeMin: timeMin });
       this.setChartType({ chartType: this.chartType });
     },
@@ -82,23 +92,6 @@ export default {
     },
     exportData() {
       console.log("export");
-    },
-    getTimeMin() {
-      // googleCalendarから取得する集計開始日を算出する
-      let date = new Date();
-      if (this.termType.indexOf("w") != -1) {
-        date.setDate(
-          date.getDate() - 7 * parseInt(this.termType.replace("w", ""))
-        );
-      } else if (this.termType.indexOf("m") != -1) {
-        date.setMonth(
-          date.getMonth() - parseInt(this.termType.replace("m", ""))
-        );
-      }
-      date.setHours(0);
-      date.setMinutes(0);
-      date.setSeconds(0);
-      return date;
     }
   }
 };

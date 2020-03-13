@@ -1,6 +1,7 @@
 const state = {
   items: [],
-  chartType: null
+  chartType: null,
+  termType: null
 };
 
 const getters = {
@@ -31,7 +32,10 @@ const mutations = {
   },
   SET_CHART_TYPE (state, payload) {
     state.chartType = payload
-  }
+  },
+  SET_TERM_TYPE (state, payload) {
+    state.termType = payload
+  },
 };
 
 const actions = {
@@ -57,7 +61,10 @@ const actions = {
   },
   setChartType ({ commit }, { chartType }) {
     commit('SET_CHART_TYPE', chartType)
-  }
+  },
+  setTermType ({ commit }, { termType }) {
+    commit('SET_TERM_TYPE', termType)
+  },
 };
 
 const calendarModule = {
