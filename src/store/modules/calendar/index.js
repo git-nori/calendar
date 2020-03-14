@@ -44,12 +44,12 @@ const actions = {
    * the authorized user's calendar. If no events are found an
    * appropriate message is printed.
    */
-  getData ({ state, commit }, { timeMin }) {
+  getData ({ state, commit }, { timeMin, timeMax }) {
     gapi.client.calendar.events
       .list({
         calendarId: "primary",
         timeMin: timeMin.toISOString(),
-        timeMax: new Date().toISOString(),
+        timeMax: timeMax.toISOString(),
         showDeleted: false,
         singleEvents: true,
         // maxResults: 1000,

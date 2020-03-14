@@ -82,8 +82,13 @@ export default {
   methods: {
     ...mapActions("calendarModule", ["getData", "setChartType", "setTermType"]),
     showChart() {
-      let timeMin = timeUtils.getTimeMin(this.termType); // 集計開始日
-      this.getData({ timeMin: timeMin });
+      // 集計開始日
+      const timeMin = timeUtils.getTimeMin(this.termType);
+      // 集計終了日をセット(前日の23:59:59)
+      const timeMax = timeUtils.getDate235959(
+        new Date(new Date().setDate(new Date().getDate() - 1))
+      );
+      this.getData({ timeMin: timeMin, timeMax: timeMax });
       this.setChartType({ chartType: this.chartType });
     },
     addEvent() {
