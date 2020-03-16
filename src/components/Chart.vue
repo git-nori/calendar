@@ -18,6 +18,7 @@ import BarChart from "@/components/chart/BarChart.vue";
 import LineChart from "@/components/chart/LineChart.vue";
 import PieChart from "@/components/chart/PieChart.vue";
 import { mapState, mapGetters } from "vuex";
+import timeUtils from "@/service/time/TimeUtil.js";
 
 export default {
   data() {
@@ -45,7 +46,7 @@ export default {
      * この書き方も可能(コンポーネント内の変数名とvuexのメソッド名が異なる場合に使用)
      * ...mapState('calendarModule', {chartType: 'chartType'})
      */
-    ...mapState("calendarModule", ["chartType"]),
+    ...mapState("calendarModule", ["chartType", "termType"]),
     ...mapGetters("calendarModule", ["filteredChartData"])
   },
   watch: {
@@ -119,7 +120,57 @@ export default {
       };
       this.options = options;
     },
-    setLineData() {},
+    setLineData() {
+      // 集計開始日
+      const calcStartDay = timeUtils.getTimeMin(this.termType);
+      // 集計終了日(前日の23:59:59)
+      const calcEndDay = timeUtils.getDate235959(
+        new Date(new Date().setDate(new Date().getDate() - 1))
+      );
+      // 指定した日数間隔を開けた日時の配列
+      const diffDaysArr = timeUtils.getDaysArray(
+        calcStartDay,
+        calcEndDay,
+        this.getPerDay()
+      );
+      // summaryをキーとした各集計開始日時、終了時のDic型配列を取得
+      const tempoData = this.getBaseChartDataDic();
+
+      this.chartData = {
+        labels: diffDaysArr.map(elm => timeUtils.formatDate(elm, "yy/MM/dd")),
+        datasets: tempoData.map(elm => {
+          let color = this.getRandomColors();
+          return {
+            label: elm.summary,
+            data: this.calcChartDataByTerm(diffDaysArr, elm.terms),
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 3,
+            lineTension: 0,
+            fill: false
+          };
+        })
+      };
+
+      // チャートのオプションのセット
+      // responsive, tooltips, maintainAspectRatioを設定したオブジェクトをセット
+      let options = this.getBaseChartOptions();
+      // y軸の設定
+      options["scales"] = {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              callback: (value, index, values) => {
+                return value + "h";
+              }
+            },
+            gridLines: { display: true }
+          }
+        ]
+      };
+      this.options = options;
+    },
     setPieData() {
       // summaryに対して集計したDic型配列を取得
       const tempoData = this.getBaseChartDataDic();
@@ -161,20 +212,55 @@ export default {
       return [...this.filteredChartData]
         .sort(compareSummarys)
         .reduce((res, current) => {
-          // 経過時間(h)を格納
-          const startTime = new Date(current.start).getTime();
-          const endTime = new Date(current.end).getTime();
-          const diffHours = (endTime - startTime) / (1000 * 60 * 60);
+          const elm = res.find(p => p.summary === current.summary);
 
-          const element = res.find(p => p.summary === current.summary);
-          if (element) {
-            // 同一キーがある場合
-            element.hours += diffHours;
+          if (this.chartType === "LineChart") {
+            /**
+             * [
+             *  0: {summary: String, terms:[{
+             *    start: int,
+             *    end: int
+             *  }]}
+             * ]
+             */
+            if (elm) {
+              // 同一キーがある場合
+              elm.terms.push({
+                start: current.start,
+                end: current.end
+              });
+            } else {
+              res.push({
+                summary: current.summary,
+                terms: [
+                  {
+                    start: current.start,
+                    end: current.end
+                  }
+                ]
+              });
+            }
           } else {
-            res.push({
-              summary: current.summary,
-              hours: diffHours
-            });
+            // 経過時間(h)を格納
+            const diffHours =
+              (new Date(current.end).getTime() -
+                new Date(current.start).getTime()) /
+              (1000 * 60 * 60);
+
+            /**
+             * [
+             *  0: {summary: String, hours: int}
+             * ]
+             */
+            if (elm) {
+              // 同一キーがある場合
+              elm.hours += diffHours;
+            } else {
+              res.push({
+                summary: current.summary,
+                hours: diffHours
+              });
+            }
           }
           return res;
         }, []);
@@ -187,9 +273,14 @@ export default {
         tooltips: {
           enabled: true,
           // ラベルに対してのboxの表示
-          displayColors: false,
+          displayColors: this.chartType === "LineChart",
           callbacks: {
             title: (tooltipItem, data) => {
+              if (this.chartType === "LineChart") {
+                return tooltipItem.map(
+                  elm => "・" + data.datasets[elm.datasetIndex].label
+                );
+              }
               return data.labels[tooltipItem[0].index];
             },
             label: (tooltipItem, data) => {
@@ -198,6 +289,12 @@ export default {
                 currentDataSets,
                 currentDataSets.data[tooltipItem.index]
               );
+            },
+            labelColor: (tooltipItem, chart) => {
+              return {
+                backgroundColor:
+                  chart.data.datasets[tooltipItem.datasetIndex].borderColor
+              };
             }
           }
         }
@@ -224,6 +321,132 @@ export default {
           break;
       }
       return arr;
+    },
+    // チャートに表示する日付の間隔を返す
+    getPerDay() {
+      const dayOfWeek = 7;
+      switch (this.termType) {
+        case "1w":
+          return 1;
+          break;
+        case "1m":
+          return 1 * dayOfWeek;
+          break;
+        case "3m":
+          return 2 * dayOfWeek;
+          break;
+        case "6m":
+          return 4 * dayOfWeek;
+          break;
+        default:
+          break;
+      }
+    },
+    // 各期間内の総時間数の合計を算出しListで返す
+    calcChartDataByTerm(daysArr, termArr) {
+      return daysArr.map((elm, i) => {
+        return (
+          termArr
+            // 対象期間内でフィルタリング
+            .filter(val => {
+              const startDate = daysArr[i];
+              let endDate;
+              if (i !== daysArr.length - 1) {
+                endDate = new Date(daysArr[i + 1]);
+              } else {
+                endDate = new Date(daysArr[i]);
+                endDate.setHours(23);
+                endDate.setMinutes(59);
+                endDate.setSeconds(59);
+              }
+
+              return this.isWithinRangeDays(
+                new Date(val.start),
+                new Date(startDate),
+                new Date(endDate)
+              );
+            })
+            // 合算
+            .reduce((res, cur) => {
+              // 経過時間(h)を格納
+              const diffHours =
+                (new Date(cur.end).getTime() - new Date(cur.start).getTime()) /
+                (1000 * 60 * 60);
+
+              return res + diffHours;
+            }, 0)
+        );
+      });
+    },
+    // 引数の日付が期間内か判定する
+    isWithinRangeDays(targetDate, rangeStartDate, rangeEndDate) {
+      let targetDateTime,
+        rangeStartTime,
+        rangeEndTime,
+        startFlag = false,
+        endFlag = false;
+
+      if (!targetDate) return false;
+
+      let isArray = function(targetObject) {
+        return Object.prototype.toString.call(targetObject) === "[object Array]"
+          ? true
+          : false;
+      };
+
+      // 日時をミリ秒で取得する関数
+      let getDateTime = function(dateObj) {
+        if (!dateObj) return;
+
+        if (typeof dateObj.getTime !== "undefined") {
+          return dateObj.getTime();
+        } else if (isArray(dateObj)) {
+          if (dateObj.length === 3) {
+            return new Date(
+              dateObj[0],
+              Number(dateObj[1]) - 1,
+              dateObj[2]
+            ).getTime();
+          } else {
+            return new Date(
+              dateObj[0],
+              Number(dateObj[1]) - 1,
+              dateObj[2],
+              dateObj[3],
+              dateObj[4],
+              dateObj[5]
+            ).getTime();
+          }
+        }
+
+        return;
+      };
+
+      targetDateTime = getDateTime(targetDate);
+      rangeStartTime = getDateTime(rangeStartDate);
+      rangeEndTime = getDateTime(rangeEndDate);
+
+      if (!targetDateTime) return false;
+
+      if (rangeStartDate) {
+        if (rangeStartTime && targetDateTime >= rangeStartTime) {
+          startFlag = true;
+        }
+      } else {
+        startFlag = true;
+      }
+
+      if (rangeEndDate) {
+        if (rangeEndTime && targetDateTime <= rangeEndTime) {
+          endFlag = true;
+        }
+      } else {
+        endFlag = true;
+      }
+
+      if (startFlag && endFlag) return true;
+
+      return false;
     }
   }
 };
