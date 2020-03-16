@@ -19,6 +19,7 @@ import LineChart from "@/components/chart/LineChart.vue";
 import PieChart from "@/components/chart/PieChart.vue";
 import { mapState, mapGetters } from "vuex";
 import timeUtils from "@/service/time/TimeUtil.js";
+import "chartjs-plugin-colorschemes";
 
 export default {
   data() {
@@ -139,12 +140,12 @@ export default {
       this.chartData = {
         labels: diffDaysArr.map(elm => timeUtils.formatDate(elm, "yy/MM/dd")),
         datasets: tempoData.map(elm => {
-          let color = this.getRandomColors();
+          // let color = this.getRandomColors();
           return {
             label: elm.summary,
             data: this.calcChartDataByTerm(diffDaysArr, elm.terms),
-            backgroundColor: color,
-            borderColor: color,
+            // backgroundColor: color,
+            // borderColor: color,
             borderWidth: 3,
             lineTension: 0,
             fill: false
@@ -180,8 +181,8 @@ export default {
         datasets: [
           {
             data: tempoData.map(elm => elm.hours),
-            backgroundColor: tempoData.map(() => this.getRandomColors()),
-            borderColor: this.backgroundColor,
+            // backgroundColor: tempoData.map(() => this.getRandomColors()),
+            // borderColor: this.backgroundColor,
             borderWidth: 1
           }
         ]
@@ -268,6 +269,13 @@ export default {
     // チャート表示のオプションを返す
     getBaseChartOptions() {
       return {
+        plugins: {
+          colorschemes: {
+            scheme: "tableau.Tableau20",
+            // 透過度を設定
+            custom: this.addAlpaFunc
+          }
+        },
         responsive: true,
         maintainAspectRatio: false,
         tooltips: {
@@ -289,13 +297,13 @@ export default {
                 currentDataSets,
                 currentDataSets.data[tooltipItem.index]
               );
-            },
-            labelColor: (tooltipItem, chart) => {
-              return {
-                backgroundColor:
-                  chart.data.datasets[tooltipItem.datasetIndex].borderColor
-              };
             }
+            // labelColor: (tooltipItem, chart) => {
+            //   return {
+            //     backgroundColor:
+            //       chart.data.datasets[tooltipItem.datasetIndex].borderColor
+            //   };
+            // }
           }
         }
       };
@@ -447,6 +455,18 @@ export default {
       if (startFlag && endFlag) return true;
 
       return false;
+    },
+    // チャートの色の透明度を設定するカスタム関数
+    addAlpaFunc(schemeColors) {
+      return schemeColors.map(function(elm) {
+        // rgba値に変換
+        const alpha = 0.7;
+        let red = parseInt(elm.substring(1, 3), 16);
+        let green = parseInt(elm.substring(3, 5), 16);
+        let blue = parseInt(elm.substring(5, 7), 16);
+        let rgba = [red, green, blue, alpha].join(",");
+        return "rgba(" + rgba + ")";
+      });
     }
   }
 };
