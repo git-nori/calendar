@@ -19,7 +19,7 @@ import LineChart from "@/components/chart/LineChart.vue";
 import PieChart from "@/components/chart/PieChart.vue";
 import { mapState, mapGetters } from "vuex";
 import timeUtils from "@/service/time/TimeUtil.js";
-import * as palette from 'google-palette';
+import * as palette from "google-palette";
 
 export default {
   data() {
@@ -81,7 +81,9 @@ export default {
         datasets: [
           {
             data: tempoData.map(elm => elm.hours),
-            backgroundColor: tempoData.map(() => this.getRandomColors()),
+            backgroundColor: palette("mpn65", tempoData.length).map(hex =>
+              this.addAlpaToColorCode("#" + hex, 0.5)
+            ),
             borderColor: this.backgroundColor,
             borderWidth: 1
           }
@@ -137,15 +139,17 @@ export default {
       // summaryをキーとした各集計開始日時、終了時のDic型配列を取得
       const tempoData = this.getBaseChartDataDic();
 
+      const colors = palette("mpn65", tempoData.length).map(hex =>
+        this.addAlpaToColorCode("#" + hex, 0.5)
+      );
       this.chartData = {
         labels: diffDaysArr.map(elm => timeUtils.formatDate(elm, "yy/MM/dd")),
-        datasets: tempoData.map(elm => {
-          // let color = this.getRandomColors();
+        datasets: tempoData.map((elm, i) => {
           return {
             label: elm.summary,
             data: this.calcChartDataByTerm(diffDaysArr, elm.terms),
-            // backgroundColor: color,
-            // borderColor: color,
+            backgroundColor: colors[i],
+            borderColor: colors[i],
             borderWidth: 3,
             lineTension: 0,
             fill: false
@@ -181,8 +185,10 @@ export default {
         datasets: [
           {
             data: tempoData.map(elm => elm.hours),
-            // backgroundColor: tempoData.map(() => this.getRandomColors()),
-            // borderColor: this.backgroundColor,
+            backgroundColor: palette("mpn65", tempoData.length).map(hex =>
+              this.addAlpaToColorCode("#" + hex, 0.5)
+            ),
+            borderColor: this.backgroundColor,
             borderWidth: 1
           }
         ]
@@ -191,12 +197,6 @@ export default {
       // チャートのオプションのセット
       // responsive, tooltips, maintainAspectRatioを設定したオブジェクトをセット
       this.options = this.getBaseChartOptions();
-    },
-    getRandomColors() {
-      var r = Math.floor(Math.random() * 255);
-      var g = Math.floor(Math.random() * 255);
-      var b = Math.floor(Math.random() * 255);
-      return "rgba(" + r + "," + g + "," + b + ", 0.2)";
     },
     // チャート生成に必要なDic型データを返す
     getBaseChartDataDic() {
@@ -279,7 +279,7 @@ export default {
             title: (tooltipItem, data) => {
               if (this.chartType === "LineChart") {
                 return tooltipItem.map(
-                  elm => "・" + data.datasets[elm.datasetIndex].label
+                  elm => data.datasets[elm.datasetIndex].label
                 );
               }
               return data.labels[tooltipItem[0].index];
@@ -291,12 +291,6 @@ export default {
                 currentDataSets.data[tooltipItem.index]
               );
             }
-            // labelColor: (tooltipItem, chart) => {
-            //   return {
-            //     backgroundColor:
-            //       chart.data.datasets[tooltipItem.datasetIndex].borderColor
-            //   };
-            // }
           }
         }
       };
@@ -449,6 +443,18 @@ export default {
 
       return false;
     },
+    // カラーコード => rgbaに変換し透過度をセット
+    addAlpaToColorCode(colorCode, alpha) {
+      let rgba = [this.convertCodeToRgba(colorCode), alpha].join(",");
+      return "rgba(" + rgba + ")";
+    },
+    convertCodeToRgba(colorCode) {
+      // rgba値に変換
+      let red = parseInt(colorCode.substring(1, 3), 16);
+      let green = parseInt(colorCode.substring(3, 5), 16);
+      let blue = parseInt(colorCode.substring(5, 7), 16);
+      return [red, green, blue].join(",");
+    }
   }
 };
 </script>
