@@ -19,7 +19,6 @@ import LineChart from "@/components/chart/LineChart.vue";
 import PieChart from "@/components/chart/PieChart.vue";
 import { mapState, mapGetters } from "vuex";
 import timeUtils from "@/service/time/TimeUtil.js";
-import "chartjs-plugin-colorschemes";
 import * as palette from 'google-palette';
 
 export default {
