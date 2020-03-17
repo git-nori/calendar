@@ -8,13 +8,13 @@
       :sort-compare="mySortCompare"
       sort-icon-left
       responsive
-      sticky-header="350px"
+      sticky-header="365px"
       hover
       head-variant="light"
       class="table-sm text-nowrap"
     >
-      <template v-slot:cell(modify)="row">
-        <b-button size="sm" @click="modifyEvent(row)" variant="outline-secondary">Modify</b-button>
+      <template v-slot:cell(edit)="row">
+        <b-button size="sm" @click="editEvent(row)" variant="outline-secondary">Edit</b-button>
       </template>
     </b-table>
   </div>
@@ -45,12 +45,12 @@ export default {
             return timeUtils.formatDate(new Date(value), "yy/MM/dd HH:mm");
           }
         },
-        { key: "modify", sortable: false, class: "text-right" }
+        { key: "edit", sortable: false, class: "text-center" }
       ]
     };
   },
   methods: {
-    modifyEvent(row) {
+    editEvent(row) {
       // 選択した項目についてモーダルを表示する
       console.log(row.item.summary, row.item.start, row.item.end);
     },

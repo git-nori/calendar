@@ -6,7 +6,7 @@
         <b-col md="6">
           <chart></chart>
         </b-col>
-        <b-col md="6 mt-3 pt-3">
+        <b-col md="6 mt-md-1 mt-3">
           <chart-data-table></chart-data-table>
         </b-col>
       </b-row>
