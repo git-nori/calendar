@@ -28,7 +28,7 @@
         >
           <b-icon icon="pie-chart-fill"></b-icon>ShowChart
         </b-button>
-        <b-button @click="addEvent" class="mx-1" variant="outline-primary" size="sm">
+        <b-button v-b-modal="'add-event'" class="mx-1" variant="outline-primary" size="sm">
           <b-icon icon="calendar"></b-icon>AddEvent
         </b-button>
         <b-button
