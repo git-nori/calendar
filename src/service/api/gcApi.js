@@ -2,7 +2,7 @@ export default {
    CLIENT_ID: process.env.VUE_APP_GOOGLE_CLIENT_ID,
    API_KEY: process.env.VUE_APP_GOOGLE_API_KEY,
    DISCOVERY_DOCS: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"], // Array of API discovery doc URLs for APIs used by the quickstart
-   SCOPES: "https://www.googleapis.com/auth/calendar.readonly", // Authorization scopes required by the API; multiple scopes can be
+   SCOPES: "https://www.googleapis.com/auth/calendar", // Authorization scopes required by the API; multiple scopes can be
    syntaxHighlight: (json) => {
       if (typeof json != "string") {
          json = JSON.stringify(json, undefined, 2);
