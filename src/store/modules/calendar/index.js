@@ -59,6 +59,21 @@ const actions = {
         commit('SET_ITEMS', response.result.items)
       });
   },
+  // insert new event to google calendar
+  async addEvent ({ state, commit }, { startDate, startTime, endDate, endTime, summary, description }) {
+    const start = startTime === undefined ? { date: startDate } : { dateTime: new Date(startDate + 'T' + startTime).toISOString() }
+    const end = endTime === undefined ? { date: endDate } : { dateTime: new Date(endDate + 'T' + endTime).toISOString() }
+    
+    await gapi.client.calendar.events.insert({
+      calendarId: 'primary',
+      resource: {
+        summary: summary,
+        description: description,
+        start: start,
+        end: end
+      }
+    })
+  },
   setChartType ({ commit }, { chartType }) {
     commit('SET_CHART_TYPE', chartType)
   },
