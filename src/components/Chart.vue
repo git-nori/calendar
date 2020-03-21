@@ -166,6 +166,13 @@ export default {
           {
             ticks: {
               beginAtZero: true,
+              // y軸の表示最大目盛り数をチャート内の最大値+1に設定
+              suggestedMax: Math.max.apply(
+                null,
+                this.chartData.datasets.map(elm =>
+                  Math.max.apply(null, elm.data)
+                )
+              ) + 1,
               callback: (value, index, values) => {
                 return value + "h";
               }
