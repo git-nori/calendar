@@ -1,8 +1,6 @@
 <template>
   <div>
     <select-box></select-box>
-    <!-- AddEvent Modal -->
-    <modal :id="'add-event'" :title="'Add New Event'" @submit="addEvent"/>
 
     <b-container fluid class="mt-4">
       <b-row class="mx-md-3">
@@ -21,19 +19,13 @@
 import SelectBox from "@/components/SelectBox.vue";
 import Chart from "@/components/Chart.vue";
 import ChartDataTable from "@/components/ChartDataTable.vue";
-import Modal from "@/components/Modal.vue";
-import { mapActions } from 'vuex'
 
 export default {
   name: "Home",
   components: {
     SelectBox,
-    Modal,
     Chart,
     ChartDataTable
-  },
-  methods: {
-    ...mapActions('calendarModule', ['addEvent']),
   },
 };
 </script>

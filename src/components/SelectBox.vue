@@ -1,56 +1,65 @@
 <template>
-  <b-container class="mt-3">
-    <b-row>
-      <b-col md="4">
-        <!-- chartTypeの切り替えで表示するコンポーネントを切り替える -->
-        <b-form-select
-          size="sm"
-          :value="chartType"
-          :options="chartOptions"
-          @change="setChartType({ chartType: $event })"
-        ></b-form-select>
-      </b-col>
-      <b-col md="4" class="mt-3 mt-md-0">
-        <b-form-select
-          size="sm"
-          :value="termType"
-          :options="termOptions"
-          @change="setTermType({ termType: $event })"
-        ></b-form-select>
-      </b-col>
-      <b-col md="4" class="text-right mt-3 mt-md-0">
-        <b-button
-          :disabled="isDisabledShowChart"
-          @click="showChart"
-          class="mx-1"
-          variant="outline-success"
-          size="sm"
-        >
-          <b-icon icon="pie-chart-fill"></b-icon>ShowChart
-        </b-button>
-        <b-button v-b-modal="'add-event'" class="mx-1" variant="outline-primary" size="sm">
-          <b-icon icon="calendar"></b-icon>AddEvent
-        </b-button>
-        <b-button
-          :disabled="isDisabledExport"
-          @click="exportData"
-          class="ml-1"
-          variant="outline-info"
-          size="sm"
-        >
-          <b-icon icon="download"></b-icon>Export
-        </b-button>
-      </b-col>
-    </b-row>
-  </b-container>
+  <div>
+    <b-container class="mt-3">
+      <b-row>
+        <b-col md="4">
+          <!-- chartTypeの切り替えで表示するコンポーネントを切り替える -->
+          <b-form-select
+            size="sm"
+            :value="chartType"
+            :options="chartOptions"
+            @change="setChartType({ chartType: $event })"
+          ></b-form-select>
+        </b-col>
+        <b-col md="4" class="mt-3 mt-md-0">
+          <b-form-select
+            size="sm"
+            :value="termType"
+            :options="termOptions"
+            @change="setTermType({ termType: $event })"
+          ></b-form-select>
+        </b-col>
+        <b-col md="4" class="text-right mt-3 mt-md-0">
+          <b-button
+            :disabled="isDisabledShowChart"
+            @click="showChart"
+            class="mx-1"
+            variant="outline-success"
+            size="sm"
+          >
+            <b-icon icon="pie-chart-fill"></b-icon>ShowChart
+          </b-button>
+          <b-button v-b-modal="'add-event'" class="mx-1" variant="outline-primary" size="sm">
+            <b-icon icon="calendar"></b-icon>AddEvent
+          </b-button>
+          <b-button
+            :disabled="isDisabledExport"
+            @click="exportData"
+            class="ml-1"
+            variant="outline-info"
+            size="sm"
+          >
+            <b-icon icon="download"></b-icon>Export
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-container>
+    <!-- AddEvent Modal -->
+    <modal id="add-event" title="Add New Event" @submit="addEvent" />
+  </div>
 </template>
 
 <script>
+import Modal from "@/components/Modal.vue";
+
 import { mapActions, mapState } from "vuex";
 import timeUtils from "@/service/time/TimeUtil.js";
 
 export default {
   name: "SelectBox",
+  components:{
+    Modal,
+  },
   data() {
     return {
       chartOptions: [
@@ -80,7 +89,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("calendarModule", ["getData", "setChartType", "setTermType"]),
+    ...mapActions("calendarModule", ["getData", "setChartType", "setTermType", 'addEvent', 'editEvent']),
     showChart() {
       // 集計開始日
       const timeMin = timeUtils.getTimeMin(this.termType);
@@ -90,10 +99,6 @@ export default {
       );
       this.getData({ timeMin: timeMin, timeMax: timeMax });
       this.setChartType({ chartType: this.chartType });
-    },
-    addEvent() {
-      // モーダルを表示し、Googleカレンダーにイベントを登録する
-      console.log("addEvent");
     },
     exportData() {
       console.log("export");
