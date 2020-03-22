@@ -27,6 +27,7 @@ const mutations = {
       obj.summary = e.summary
       obj.start = e.start.dateTime
       obj.end = e.end.dateTime
+      obj.htmlLink = e.htmlLink
       return obj
     })
   },

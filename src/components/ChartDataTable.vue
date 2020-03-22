@@ -14,14 +14,17 @@
       class="table-sm text-nowrap"
     >
       <template v-slot:cell(edit)="row">
-        <b-button size="sm" @click="editEvent(row)" variant="outline-secondary">Edit</b-button>
+          <!-- 新規タブでGoogleカレンダーの編集ページを表示 -->
+        <b-button :href="editLink(row.item)" target="_blank" size="sm" variant="outline-secondary">
+          <b-icon icon="calendar"></b-icon>Edit
+        </b-button>
       </template>
     </b-table>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import timeUtils from "@/service/time/TimeUtil.js";
 
 export default {
@@ -50,10 +53,6 @@ export default {
     };
   },
   methods: {
-    editEvent(row) {
-      // 選択した項目についてモーダルを表示する
-      console.log(row.item.summary, row.item.start, row.item.end);
-    },
     mySortCompare(a, b, key) {
       if (key === "summary") {
         // summary列でのソートの場合
@@ -77,10 +76,18 @@ export default {
       } else {
         return false;
       }
-    }
+    },
   },
   computed: {
-    ...mapGetters("calendarModule", ["getChartTableData"])
+    ...mapGetters("calendarModule", ["getChartTableData"]),
+    editLink() {
+      return (rowItem) => {
+        let editEventId = rowItem.htmlLink.split("eid=")[1];
+        return (
+          "https://calendar.google.com/calendar/r/eventedit/" + editEventId
+        );
+      };
+    }
   }
 };
 </script>
