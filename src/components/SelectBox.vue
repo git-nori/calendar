@@ -29,7 +29,8 @@
           >
             <b-icon icon="pie-chart-fill"></b-icon>ShowChart
           </b-button>
-          <b-button v-b-modal="'add-event'" class="mx-1" variant="outline-primary" size="sm">
+          <!-- 新規タブでGoogleカレンダーを表示 -->
+          <b-button href="https://calendar.google.com/calendar/r/eventedit" target="_blank" class="mx-1" variant="outline-primary" size="sm">
             <b-icon icon="calendar"></b-icon>AddEvent
           </b-button>
           <b-button
@@ -44,22 +45,15 @@
         </b-col>
       </b-row>
     </b-container>
-    <!-- AddEvent Modal -->
-    <modal id="add-event" title="Add New Event" @submit="addEvent" />
   </div>
 </template>
 
 <script>
-import Modal from "@/components/Modal.vue";
-
 import { mapActions, mapState } from "vuex";
 import timeUtils from "@/service/time/TimeUtil.js";
 
 export default {
   name: "SelectBox",
-  components:{
-    Modal,
-  },
   data() {
     return {
       chartOptions: [
@@ -89,7 +83,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("calendarModule", ["getData", "setChartType", "setTermType", 'addEvent', 'editEvent']),
+    ...mapActions("calendarModule", ["getData", "setChartType", "setTermType"]),
     showChart() {
       // 集計開始日
       const timeMin = timeUtils.getTimeMin(this.termType);
